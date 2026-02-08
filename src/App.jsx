@@ -206,7 +206,7 @@ export default function App() {
           <div className="relative z-10 w-full max-w-4xl">
             <div className="flex items-center gap-4 mb-4 animate-fade-in">
                <div className="h-[2px] w-12 bg-lotus-red shadow-[0_0_10px_red]"></div>
-               <h3 className="text-lotus-red tracking-[0.4em] font-bold text-xs uppercase">UFS Original Series</h3>
+               <h3 className="text-lotus-red tracking-[0.4em] font-bold text-xs uppercase">SSF Original Series</h3>
             </div>
             
             <h1 className="text-8xl md:text-[11rem] leading-none font-anton uppercase text-white drop-shadow-glow mb-4">
