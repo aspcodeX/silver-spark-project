@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { User, X, Play } from 'lucide-react';
 
-// 👇 FIREBASE IMPORTS (Backend ab ye sambhalega)
+// 👇 FIREBASE IMPORTS
 import { auth } from './firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, signOut, onAuthStateChanged } from "firebase/auth";
 
 // 👇 ASSETS
 import teaserVideo from './assets/teaser.mp4'; 
 import anjanayImg from './assets/Anjanay.jpg';  
-import aryanImg from './assets/Aryan.jpg';    
+import aryanImg from './assets/Aryan.jpg';     
 import priyanshuImg from './assets/Priyanshu.jpg';
 import samuelImg from './assets/Samuel.jpg';   
 import shalomImg from './assets/Shalom.jpg';   
@@ -29,7 +29,7 @@ export default function App() {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         setUser({
-          username: currentUser.displayName || "Crew Member", // Agar naam na mile toh default
+          username: currentUser.displayName || "Crew Member",
           email: currentUser.email
         });
       } else {
@@ -41,14 +41,13 @@ export default function App() {
 
   const handleInputChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  // 👇 PURE FIREBASE AUTH (No MongoDB, No Server.js)
+  // 👇 AUTH LOGIC
   const handleAuth = async (e) => {
     e.preventDefault();
     try {
       if (authMode === 'signup') {
         const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
         await updateProfile(userCredential.user, { displayName: formData.username });
-        // Turant login set karne ke liye:
         setUser({ username: formData.username, email: formData.email });
         alert("Welcome to the Red Lotus Crew! 🩸");
         setShowAuth(false);
@@ -58,7 +57,6 @@ export default function App() {
         setShowAuth(false);
       }
     } catch (error) {
-      // Error ko saaf dikhana
       const msg = error.code.replace('auth/', '').replace(/-/g, ' ').toUpperCase();
       alert(`ACCESS DENIED: ${msg}`);
     }
@@ -78,12 +76,99 @@ export default function App() {
     { role: "ADITYA", actor: "VEDANT NAMBIAR", img: vedantImg },
     { role: "SUNIL", actor: "ANJANAY", img: anjanayImg },
     { role: "DEV", actor: "SATYAM", img: satyamImg },
-
   ];
 
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-lotus-red selection:text-white overflow-x-hidden">
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;700;800&display=swap');`}</style>
+      
+      {/* 👇 INTERNAL CSS FOR FOOTER (Taaki alag se file na edit karni pade) */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;700;800&display=swap');
+        
+        /* --- GOOGLE STYLE FOOTER (DARK THEME) --- */
+        .google-footer {
+          background-color: #000000;
+          color: #ffffff;
+          padding: 60px 20px 20px;
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          font-family: 'Manrope', sans-serif;
+        }
+        .footer-top {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          gap: 40px;
+          margin-bottom: 60px;
+          max-width: 1400px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        .newsletter-section h3 {
+          font-size: 24px;
+          max-width: 400px;
+          margin-bottom: 20px;
+          font-weight: 300;
+          color: #ccc;
+        }
+        .social-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+        .icon-btn, .signup-btn {
+          padding: 10px 20px;
+          border: 1px solid rgba(255,255,255,0.3);
+          background: transparent;
+          color: white;
+          border-radius: 30px;
+          cursor: pointer;
+          font-size: 14px;
+          transition: 0.3s;
+        }
+        .icon-btn:hover, .signup-btn:hover {
+          background: #ff0000; /* Lotus Red hover */
+          border-color: #ff0000;
+          color: white;
+        }
+        .footer-nav { display: flex; gap: 60px; }
+        .nav-column h4 { margin-bottom: 20px; font-size: 14px; color: #666; text-transform: uppercase; letter-spacing: 2px; }
+        .nav-column a {
+          display: block; color: #999; text-decoration: none; margin-bottom: 12px; font-size: 14px; transition: 0.3s;
+        }
+        .nav-column a:hover { color: #fff; transform: translateX(5px); }
+        
+        /* HUGE TEXT */
+        .footer-big-text {
+          border-top: 1px solid rgba(255,255,255,0.1);
+          padding-top: 20px;
+          text-align: center;
+          overflow: hidden;
+        }
+        .footer-big-text span {
+          font-family: 'Anton', sans-serif;
+          font-size: 13vw;
+          color: #fff;
+          line-height: 1;
+          letter-spacing: -0.02em;
+          display: block;
+          text-transform: uppercase;
+          background: linear-gradient(to bottom, #fff, #444);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+
+        /* BOTTOM BAR */
+        .footer-bottom {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-top: 20px;
+          padding-top: 20px;
+          border-top: 1px solid rgba(255,255,255,0.1);
+          font-size: 12px;
+          text-transform: uppercase;
+          color: #555;
+          letter-spacing: 1px;
+        }
+        .legal-links a { margin-left: 20px; color: #555; text-decoration: none; }
+        .legal-links a:hover { color: #fff; }
+      `}</style>
 
       {/* --- NAVBAR --- */}
       <nav className="flex justify-between items-center px-8 py-6 fixed w-full z-50 bg-gradient-to-b from-black/90 to-transparent backdrop-blur-sm">
@@ -192,10 +277,53 @@ export default function App() {
         )}
       </div>
 
-      <footer className="bg-dark-card border-t border-white/10 py-16 text-center">
-          <p className="text-gray-500 text-[10px] tracking-[0.4em] uppercase mb-6">DEVELOPED BY LUFFY__4567</p>
-          <h1 className="text-lotus-red font-anton text-4xl tracking-widest uppercase mb-12 hover:scale-110 transition duration-500 cursor-default">RED LOTUS</h1>
-          <div className="max-w-4xl mx-auto border-t border-white/5 py-8 flex flex-col md:flex-row justify-between items-center px-8 text-[10px] text-gray-600 tracking-widest uppercase font-mono"><p>UFS PRODUCTION CODE: 04567</p><p>©  2026 SILVER SPARK FILMS ALL Rights Reserved</p></div>
+      {/* --- NEW GOOGLE LABS STYLE FOOTER (SILVER SPARK FILMS) --- */}
+      <footer className="google-footer">
+        
+        {/* Top Section */}
+        <div className="footer-top">
+          <div className="newsletter-section">
+            <h3>Stay connected for early access to our newest films and events.</h3>
+            <div className="social-buttons">
+              <button className="icon-btn">👾 Discord</button>
+              <button className="icon-btn">❌ Twitter</button>
+              <button className="signup-btn">Sign up for our newsletter</button>
+            </div>
+          </div>
+
+          <div className="footer-nav">
+            <div className="nav-column">
+              <h4>Navigation</h4>
+              <a href="#">About</a>
+              <a href="#">Experiments</a>
+              <a href="#">Sessions</a>
+              <a href="#">Community</a>
+            </div>
+            <div className="nav-column">
+              <h4>Projects</h4>
+              <a href="#">Short Films</a>
+              <a href="#">Documentaries</a>
+              <a href="#">Commercials</a>
+            </div>
+          </div>
+        </div>
+
+        {/* HUGE TEXT */}
+        <div className="footer-big-text">
+          <span>Silver Spark Films</span>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="footer-bottom">
+          <div className="brand-small">Silver Spark Films</div>
+          <div className="legal-links">
+            <a href="#">About</a>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Help</a>
+          </div>
+        </div>
+
       </footer>
 
       {/* LOGIN MODAL */}
