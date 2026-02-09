@@ -8,11 +8,11 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfi
 // 👇 ASSETS
 import teaserVideo from './assets/teaser.mp4'; 
 import anjanayImg from './assets/Anjanay.jpg';  
-import aryanImg from './assets/Aryan.jpg';     
+import aryanImg from './assets/Aryan.jpg';      
 import priyanshuImg from './assets/Priyanshu.jpg';
-import samuelImg from './assets/Samuel.jpg';   
-import shalomImg from './assets/Shalom.jpg';   
-import vedantImg from './assets/Vedant.jpg';  
+import samuelImg from './assets/Samuel.jpg';    
+import shalomImg from './assets/Shalom.jpg';    
+import vedantImg from './assets/Vedant.jpg';   
 import satyamImg from './assets/Satyam.jpg'; 
 
 /* --- PROFESSIONAL VIDEO PLAYER COMPONENT --- */
@@ -164,28 +164,44 @@ const ProfessionalPlayer = ({ src, onClose }) => {
   );
 };
 
-/* --- NEW: STORY & COUNTDOWN SECTION --- */
+/* --- UPDATED: STORY & ENDLESS COUNTDOWN SECTION --- */
 const StorySection = () => {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
-  // Countdown Logic (Set date to Future)
   useEffect(() => {
-    const targetDate = new Date("2026-04-01T00:00:00").getTime(); // <-- CHANGE DATE HERE
+    // 👇 ENDLESS TIMER LOGIC START
+    const getNextTargetDate = () => {
+      const cycleDays = 15; // Timer resets every 15 days
+      const cycleDuration = cycleDays * 24 * 60 * 60 * 1000; // Convert to milliseconds
+      const baseDate = new Date("2024-01-01T00:00:00").getTime(); // A past reference date
+      const now = new Date().getTime();
+      
+      // Calculate how many cycles have passed and set target to the next one
+      const timePassed = now - baseDate;
+      const nextCycleIndex = Math.ceil(timePassed / cycleDuration);
+      return baseDate + (nextCycleIndex * cycleDuration);
+    };
+
+    let targetDate = getNextTargetDate();
+
     const interval = setInterval(() => {
       const now = new Date().getTime();
-      const distance = targetDate - now;
+      let distance = targetDate - now;
 
+      // Agar timer zero ho jaye, toh turant agla cycle set kar do
       if (distance < 0) {
-        clearInterval(interval);
-      } else {
-        setTimeLeft({
-          days: Math.floor(distance / (1000 * 60 * 60 * 24)),
-          hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-          minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-          seconds: Math.floor((distance % (1000 * 60)) / 1000),
-        });
+         targetDate = getNextTargetDate();
+         distance = targetDate - now;
       }
+
+      setTimeLeft({
+        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+        seconds: Math.floor((distance % (1000 * 60)) / 1000),
+      });
     }, 1000);
+
     return () => clearInterval(interval);
   }, []);
 
@@ -199,8 +215,8 @@ const StorySection = () => {
         {/* Left: The Story (Redacted Style) */}
         <div>
           <div className="flex items-center gap-3 mb-6">
-             <span className="bg-lotus-red text-white text-[10px] font-bold px-2 py-1 uppercase tracking-widest">Confidential</span>
-             <span className="text-gray-500 text-[10px] font-mono tracking-widest">FILE_NO_2026_RL</span>
+             <span className="bg-lotus-red text-white text-[10px] font-bold px-2 py-1 uppercase tracking-widest animate-pulse">Classified</span>
+             <span className="text-gray-500 text-[10px] font-mono tracking-widest">CYCLE_RELOAD_INFINITE</span>
           </div>
           
           <h2 className="text-4xl md:text-6xl font-anton uppercase text-white mb-8 leading-tight">
@@ -217,14 +233,15 @@ const StorySection = () => {
           </p>
         </div>
 
-        {/* Right: The Countdown */}
+        {/* Right: The Endless Countdown */}
         <div className="bg-neutral-900 border border-white/10 p-10 md:p-14 relative group shadow-[0_0_30px_rgba(0,0,0,0.8)]">
-           <div className="absolute top-0 left-0 w-2 h-2 bg-white"></div>
-           <div className="absolute top-0 right-0 w-2 h-2 bg-white"></div>
-           <div className="absolute bottom-0 left-0 w-2 h-2 bg-white"></div>
-           <div className="absolute bottom-0 right-0 w-2 h-2 bg-white"></div>
+           {/* Active Corner Accents (Hover Effect Included) */}
+           <div className="absolute top-0 left-0 w-2 h-2 bg-white transition-all duration-300 group-hover:w-full group-hover:bg-lotus-red/50"></div>
+           <div className="absolute top-0 right-0 w-2 h-2 bg-white transition-all duration-300 group-hover:h-full group-hover:bg-lotus-red/50"></div>
+           <div className="absolute bottom-0 left-0 w-2 h-2 bg-white transition-all duration-300 group-hover:h-full group-hover:bg-lotus-red/50"></div>
+           <div className="absolute bottom-0 right-0 w-2 h-2 bg-white transition-all duration-300 group-hover:w-full group-hover:bg-lotus-red/50"></div>
 
-           <h3 className="text-center text-gray-500 text-xs font-bold tracking-[0.4em] uppercase mb-10">Premiere Countdown</h3>
+           <h3 className="text-center text-gray-500 text-xs font-bold tracking-[0.4em] uppercase mb-10">Next Occurrence</h3>
            
            <div className="grid grid-cols-4 gap-4 text-center">
               <div>
@@ -260,7 +277,7 @@ export default function App() {
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState('login');
   const [showTeaser, setShowTeaser] = useState(false);
-  
+   
   const [user, setUser] = useState(null);
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
 
@@ -320,7 +337,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-lotus-red selection:text-white overflow-x-hidden">
-      
+       
       {/* 👇 INTERNAL CSS FOR FOOTER & PLAYER */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;700;800&display=swap');
@@ -450,11 +467,11 @@ export default function App() {
                <div className="h-[2px] w-12 bg-lotus-red shadow-[0_0_10px_red]"></div>
                <h3 className="text-lotus-red tracking-[0.4em] font-bold text-xs uppercase">UFS Original Series</h3>
             </div>
-            
+             
             <h1 className="text-8xl md:text-[11rem] leading-none font-anton uppercase text-white drop-shadow-glow mb-4">
               RED <br /> LOTUS
             </h1>
-            
+             
             <p className="text-gray-300 mt-6 text-lg md:text-xl tracking-wide font-light max-w-2xl border-l-4 border-lotus-red pl-6">
               "The bloom is beautiful, but the roots are hidden in the dark."
             </p>
@@ -474,7 +491,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* 👇 NEW SECTION ADDED HERE */}
+        {/* 👇 THIS IS THE NEW ENDLESS STORY SECTION */}
         <StorySection />
         </>
       )}
