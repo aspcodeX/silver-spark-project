@@ -8,11 +8,11 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfi
 // 👇 ASSETS
 import teaserVideo from './assets/teaser.mp4'; 
 import anjanayImg from './assets/Anjanay.jpg';  
-import aryanImg from './assets/Aryan.jpg';      
+import aryanImg from './assets/Aryan.jpg';     
 import priyanshuImg from './assets/Priyanshu.jpg';
-import samuelImg from './assets/Samuel.jpg';    
-import shalomImg from './assets/Shalom.jpg';    
-import vedantImg from './assets/Vedant.jpg';   
+import samuelImg from './assets/Samuel.jpg';   
+import shalomImg from './assets/Shalom.jpg';   
+import vedantImg from './assets/Vedant.jpg';  
 import satyamImg from './assets/Satyam.jpg'; 
 
 /* --- PROFESSIONAL VIDEO PLAYER COMPONENT --- */
@@ -164,120 +164,13 @@ const ProfessionalPlayer = ({ src, onClose }) => {
   );
 };
 
-/* --- UPDATED: STORY & ENDLESS COUNTDOWN SECTION --- */
-const StorySection = () => {
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-
-  useEffect(() => {
-    // 👇 ENDLESS TIMER LOGIC START
-    const getNextTargetDate = () => {
-      const cycleDays = 15; // Timer resets every 15 days
-      const cycleDuration = cycleDays * 24 * 60 * 60 * 1000; // Convert to milliseconds
-      const baseDate = new Date("2024-01-01T00:00:00").getTime(); // A past reference date
-      const now = new Date().getTime();
-      
-      // Calculate how many cycles have passed and set target to the next one
-      const timePassed = now - baseDate;
-      const nextCycleIndex = Math.ceil(timePassed / cycleDuration);
-      return baseDate + (nextCycleIndex * cycleDuration);
-    };
-
-    let targetDate = getNextTargetDate();
-
-    const interval = setInterval(() => {
-      const now = new Date().getTime();
-      let distance = targetDate - now;
-
-      // Agar timer zero ho jaye, toh turant agla cycle set kar do
-      if (distance < 0) {
-         targetDate = getNextTargetDate();
-         distance = targetDate - now;
-      }
-
-      setTimeLeft({
-        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-        minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-        seconds: Math.floor((distance % (1000 * 60)) / 1000),
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <section className="relative py-24 px-8 md:px-16 bg-[#0a0a0a] overflow-hidden border-t border-white/10">
-      {/* Background Texture */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-900 via-black to-black opacity-50"></div>
-      
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center relative z-10">
-        
-        {/* Left: The Story (Redacted Style) */}
-        <div>
-          <div className="flex items-center gap-3 mb-6">
-             <span className="bg-lotus-red text-white text-[10px] font-bold px-2 py-1 uppercase tracking-widest animate-pulse">Classified</span>
-             <span className="text-gray-500 text-[10px] font-mono tracking-widest">CYCLE_RELOAD_INFINITE</span>
-          </div>
-          
-          <h2 className="text-4xl md:text-6xl font-anton uppercase text-white mb-8 leading-tight">
-            NOT EVERY <span className="text-lotus-red">TRUTH</span> <br/> IS MEANT TO BE <br/> FOUND.
-          </h2>
-          
-          <p className="text-gray-400 text-lg leading-relaxed font-manrope mb-6">
-            In the shadowed alleys of <span className="bg-white/10 px-1 text-white">Badlapur</span>, a secret society moves in silence. They don't want money. They don't want power. They want <span className="text-lotus-red font-bold">blood</span>.
-          </p>
-          
-          <p className="text-gray-400 text-lg leading-relaxed font-manrope">
-            When Nikhil stumbles upon the <span className="line-through decoration-lotus-red decoration-2 text-gray-600">forbidden archives</span>, he realizes that his life was never his own. The 
-            <span className="text-white font-bold tracking-wider mx-1">RED LOTUS</span> is blooming, and its roots are deeper than anyone feared.
-          </p>
-        </div>
-
-        {/* Right: The Endless Countdown */}
-        <div className="bg-neutral-900 border border-white/10 p-10 md:p-14 relative group shadow-[0_0_30px_rgba(0,0,0,0.8)]">
-           {/* Active Corner Accents (Hover Effect Included) */}
-           <div className="absolute top-0 left-0 w-2 h-2 bg-white transition-all duration-300 group-hover:w-full group-hover:bg-lotus-red/50"></div>
-           <div className="absolute top-0 right-0 w-2 h-2 bg-white transition-all duration-300 group-hover:h-full group-hover:bg-lotus-red/50"></div>
-           <div className="absolute bottom-0 left-0 w-2 h-2 bg-white transition-all duration-300 group-hover:h-full group-hover:bg-lotus-red/50"></div>
-           <div className="absolute bottom-0 right-0 w-2 h-2 bg-white transition-all duration-300 group-hover:w-full group-hover:bg-lotus-red/50"></div>
-
-           <h3 className="text-center text-gray-500 text-xs font-bold tracking-[0.4em] uppercase mb-10">Next Occurrence</h3>
-           
-           <div className="grid grid-cols-4 gap-4 text-center">
-              <div>
-                <div className="text-4xl md:text-6xl font-anton text-white mb-2">{timeLeft.days}</div>
-                <div className="text-[10px] text-lotus-red uppercase tracking-widest">Days</div>
-              </div>
-              <div>
-                <div className="text-4xl md:text-6xl font-anton text-white mb-2">{timeLeft.hours}</div>
-                <div className="text-[10px] text-lotus-red uppercase tracking-widest">Hours</div>
-              </div>
-              <div>
-                <div className="text-4xl md:text-6xl font-anton text-white mb-2">{timeLeft.minutes}</div>
-                <div className="text-[10px] text-lotus-red uppercase tracking-widest">Mins</div>
-              </div>
-              <div>
-                <div className="text-4xl md:text-6xl font-anton text-white mb-2 animate-pulse">{timeLeft.seconds}</div>
-                <div className="text-[10px] text-lotus-red uppercase tracking-widest">Secs</div>
-              </div>
-           </div>
-
-           <button className="w-full mt-12 border border-white/20 py-4 text-xs font-bold uppercase tracking-[0.2em] hover:bg-white hover:text-black transition duration-300">
-             Join the Waitlist
-           </button>
-        </div>
-      </div>
-    </section>
-  );
-};
-
 /* --- MAIN APP COMPONENT --- */
 export default function App() {
   const [view, setView] = useState('home');
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState('login');
   const [showTeaser, setShowTeaser] = useState(false);
-   
+  
   const [user, setUser] = useState(null);
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
 
@@ -337,7 +230,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-lotus-red selection:text-white overflow-x-hidden">
-       
+      
       {/* 👇 INTERNAL CSS FOR FOOTER & PLAYER */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;700;800&display=swap');
@@ -447,7 +340,7 @@ export default function App() {
             </div>
           ) : (
             <button onClick={() => setShowAuth(true)} className="bg-lotus-red text-white px-6 py-3 text-xs font-bold tracking-widest hover:bg-red-700 transition uppercase shadow-[0_0_15px_rgba(255,0,0,0.5)]">
-              SIGN IN
+              LOGIN
             </button>
           )}
         </div>
@@ -455,8 +348,6 @@ export default function App() {
 
       {/* --- MAIN CONTENT --- */}
       {view === 'home' && (
-        <>
-        {/* HERO SECTION */}
         <div className="relative min-h-screen flex items-center px-8 md:px-16 pt-20">
           <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-30"></div>
           <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent"></div>
@@ -465,15 +356,15 @@ export default function App() {
           <div className="relative z-10 w-full max-w-4xl">
             <div className="flex items-center gap-4 mb-4 animate-fade-in">
                <div className="h-[2px] w-12 bg-lotus-red shadow-[0_0_10px_red]"></div>
-               <h3 className="text-lotus-red tracking-[0.4em] font-bold text-xs uppercase">SSF Original Series</h3>
+               <h3 className="text-lotus-red tracking-[0.4em] font-bold text-xs uppercase">UFS Original Series</h3>
             </div>
-             
+            
             <h1 className="text-8xl md:text-[11rem] leading-none font-anton uppercase text-white drop-shadow-glow mb-4">
               RED <br /> LOTUS
             </h1>
-             
+            
             <p className="text-gray-300 mt-6 text-lg md:text-xl tracking-wide font-light max-w-2xl border-l-4 border-lotus-red pl-6">
-              "Teaser Coming soon."
+              "The bloom is beautiful, but the roots are hidden in the dark."
             </p>
 
             <div className="mt-12 flex flex-col md:flex-row gap-6">
@@ -490,10 +381,6 @@ export default function App() {
             </div>
           </div>
         </div>
-
-        {/* 👇 THIS IS THE NEW ENDLESS STORY SECTION */}
-        <StorySection />
-        </>
       )}
 
       <div className="px-8 md:px-16 py-20 bg-black">
@@ -546,9 +433,9 @@ export default function App() {
           <div className="newsletter-section">
             <h3>Stay connected for early access to our newest films and events.</h3>
             <div className="social-buttons">
-              <button className="icon-btn">Instagram</button>
-              <button className="icon-btn">Youtube</button>
-              <button className="signup-btn">Sign up for our Updates</button>
+              <button className="icon-btn">👾 Discord</button>
+              <button className="icon-btn">❌ Twitter</button>
+              <button className="signup-btn">Sign up for our newsletter</button>
             </div>
           </div>
           <div className="footer-nav">
