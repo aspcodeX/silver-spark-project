@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { User, X, Play } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { User, X, Play, Pause, Volume2, VolumeX, Maximize, Minimize } from 'lucide-react';
 
 // 👇 FIREBASE IMPORTS
 import { auth } from './firebase';
@@ -15,6 +15,156 @@ import shalomImg from './assets/Shalom.jpg';
 import vedantImg from './assets/Vedant.jpg';  
 import satyamImg from './assets/Satyam.jpg'; 
 
+/* --- PROFESSIONAL VIDEO PLAYER COMPONENT --- */
+const ProfessionalPlayer = ({ src, onClose }) => {
+  const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showControls, setShowControls] = useState(true);
+  let controlTimeout;
+
+  // Auto Play on Load
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().then(() => setIsPlaying(true)).catch(err => console.log("Autoplay blocked", err));
+    }
+  }, []);
+
+  // Handle Mouse Movement (Hide/Show Controls)
+  const handleMouseMove = () => {
+    setShowControls(true);
+    clearTimeout(controlTimeout);
+    controlTimeout = setTimeout(() => {
+      if (isPlaying) setShowControls(false);
+    }, 2500);
+  };
+
+  const togglePlay = () => {
+    if (videoRef.current.paused) {
+      videoRef.current.play();
+      setIsPlaying(true);
+    } else {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    }
+  };
+
+  const handleTimeUpdate = () => {
+    const current = videoRef.current.currentTime;
+    const duration = videoRef.current.duration;
+    setProgress((current / duration) * 100);
+  };
+
+  const handleSeek = (e) => {
+    const progressBar = e.target;
+    const newTime = (e.nativeEvent.offsetX / progressBar.offsetWidth) * videoRef.current.duration;
+    videoRef.current.currentTime = newTime;
+  };
+
+  const toggleMute = () => {
+    videoRef.current.muted = !isMuted;
+    setIsMuted(!isMuted);
+  };
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      videoRef.current.parentElement.requestFullscreen();
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  };
+
+  // Format Time (e.g. 1:30)
+  const formatTime = (time) => {
+    if (!time) return "0:00";
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
+
+  return (
+    <div 
+      className="fixed inset-0 z-[2000] bg-black flex items-center justify-center"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => isPlaying && setShowControls(false)}
+    >
+      {/* Container for Fullscreen */}
+      <div className="relative w-full max-w-6xl aspect-video bg-black shadow-2xl group overflow-hidden">
+        
+        {/* Video Tag */}
+        <video 
+          ref={videoRef}
+          src={src}
+          className="w-full h-full object-contain cursor-pointer"
+          onClick={togglePlay}
+          onTimeUpdate={handleTimeUpdate}
+          onEnded={() => { setIsPlaying(false); setShowControls(true); }}
+        />
+
+        {/* Close Button (Top Right) */}
+        <div className={`absolute top-6 right-6 z-50 transition-opacity duration-300 ${showControls ? 'opacity-100' : 'opacity-0'}`}>
+          <button onClick={onClose} className="bg-black/50 hover:bg-lotus-red p-2 rounded-full text-white backdrop-blur-md transition">
+            <X size={24} />
+          </button>
+        </div>
+
+        {/* Big Center Play Button (Only when paused) */}
+        {!isPlaying && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="bg-lotus-red/80 p-6 rounded-full text-white shadow-[0_0_50px_rgba(255,0,0,0.5)] backdrop-blur-sm animate-pulse">
+              <Play size={48} fill="white" />
+            </div>
+          </div>
+        )}
+
+        {/* Bottom Controls Bar */}
+        <div className={`absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 to-transparent p-6 transition-all duration-500 ${showControls ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
+          
+          {/* Progress Bar */}
+          <div className="w-full h-1 bg-gray-600 cursor-pointer mb-4 hover:h-2 transition-all group/bar" onClick={handleSeek}>
+             <div 
+               className="h-full bg-lotus-red relative" 
+               style={{ width: `${progress}%` }}
+             >
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover/bar:opacity-100 shadow-[0_0_10px_white]"></div>
+             </div>
+          </div>
+
+          <div className="flex justify-between items-center text-white font-manrope">
+            <div className="flex items-center gap-6">
+              <button onClick={togglePlay} className="hover:text-lotus-red transition">
+                {isPlaying ? <Pause size={24} fill="white"/> : <Play size={24} fill="white"/>}
+              </button>
+              
+              <div className="flex items-center gap-2 group/vol">
+                <button onClick={toggleMute} className="hover:text-lotus-red transition">
+                  {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+                </button>
+              </div>
+
+              <span className="text-xs font-bold tracking-widest text-gray-300">
+                {videoRef.current && formatTime(videoRef.current.currentTime)} / {videoRef.current && formatTime(videoRef.current.duration)}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <span className="text-[10px] font-bold tracking-[0.2em] text-lotus-red uppercase">Official Teaser</span>
+              <button onClick={toggleFullscreen} className="hover:text-lotus-red transition">
+                {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* --- MAIN APP COMPONENT --- */
 export default function App() {
   const [view, setView] = useState('home');
   const [showAuth, setShowAuth] = useState(false);
@@ -81,7 +231,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-lotus-red selection:text-white overflow-x-hidden">
       
-      {/* 👇 INTERNAL CSS FOR FOOTER (Taaki alag se file na edit karni pade) */}
+      {/* 👇 INTERNAL CSS FOR FOOTER & PLAYER */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;700;800&display=swap');
         
@@ -190,7 +340,7 @@ export default function App() {
             </div>
           ) : (
             <button onClick={() => setShowAuth(true)} className="bg-lotus-red text-white px-6 py-3 text-xs font-bold tracking-widest hover:bg-red-700 transition uppercase shadow-[0_0_15px_rgba(255,0,0,0.5)]">
-              SIGN IN
+              LOGIN
             </button>
           )}
         </div>
@@ -206,7 +356,7 @@ export default function App() {
           <div className="relative z-10 w-full max-w-4xl">
             <div className="flex items-center gap-4 mb-4 animate-fade-in">
                <div className="h-[2px] w-12 bg-lotus-red shadow-[0_0_10px_red]"></div>
-               <h3 className="text-lotus-red tracking-[0.4em] font-bold text-xs uppercase">SSF Original Series</h3>
+               <h3 className="text-lotus-red tracking-[0.4em] font-bold text-xs uppercase">UFS Original Series</h3>
             </div>
             
             <h1 className="text-8xl md:text-[11rem] leading-none font-anton uppercase text-white drop-shadow-glow mb-4">
@@ -214,7 +364,7 @@ export default function App() {
             </h1>
             
             <p className="text-gray-300 mt-6 text-lg md:text-xl tracking-wide font-light max-w-2xl border-l-4 border-lotus-red pl-6">
-              "Teaser Coming Soon."
+              "The bloom is beautiful, but the roots are hidden in the dark."
             </p>
 
             <div className="mt-12 flex flex-col md:flex-row gap-6">
@@ -271,26 +421,23 @@ export default function App() {
                 <div className="bg-dark-card border border-white/10 p-8 md:col-span-3 hover:bg-white/5 transition"><p className="text-gray-500 text-[10px] font-bold tracking-[0.3em] uppercase mb-4">EDITING & LIGHT CGI PART</p><h3 className="text-3xl font-anton uppercase text-white tracking-wide">ANJANAY @laxus_am<span className="text-lotus-red">,</span> ARYAN PAWAR <span className="text-lotus-red">&</span> AKSHAT @cf.vxpor</h3></div>
                 <div className="bg-dark-card border border-white/10 p-8 hover:bg-white/5 transition"><p className="text-gray-500 text-[10px] font-bold tracking-[0.3em] uppercase mb-4">VISUALIZER & VISUALS</p><h3 className="text-3xl font-anton uppercase text-white tracking-wide">PRIYANSHU</h3></div>
                 <div className="bg-dark-card border border-white/10 p-8 hover:bg-white/5 transition"><p className="text-gray-500 text-[10px] font-bold tracking-[0.3em] uppercase mb-4">LOCATIONS OF SHOOT</p><h3 className="text-2xl font-anton uppercase text-white tracking-wide">BADLAPUR <br/> AMBARNATH</h3></div>
-                <div className="bg-dark-card border border-lotus-red p-8 hover:bg-white/5 transition shadow-[0_0_15px_rgba(255,0,0,0.1)]"><p className="text-lotus-red text-[10px] font-bold tracking-[0.3em] uppercase mb-4">WEB DEVELOPER</p><h3 className="text-2xl font-anton uppercase text-white tracking-wide">LUFFY__4567 </h3></div>
+                <div className="bg-dark-card border border-lotus-red p-8 hover:bg-white/5 transition shadow-[0_0_15px_rgba(255,0,0,0.1)]"><p className="text-lotus-red text-[10px] font-bold tracking-[0.3em] uppercase mb-4">WEB DEVELOPER</p><h3 className="text-2xl font-anton uppercase text-white tracking-wide">LUFFY__4567 @luffy__4567</h3></div>
              </div>
           </div>
         )}
       </div>
 
-      {/* --- NEW GOOGLE LABS STYLE FOOTER (SILVER SPARK FILMS) --- */}
+      {/* --- NEW GOOGLE LABS STYLE FOOTER --- */}
       <footer className="google-footer">
-        
-        {/* Top Section */}
         <div className="footer-top">
           <div className="newsletter-section">
             <h3>Stay connected for early access to our newest films and events.</h3>
             <div className="social-buttons">
-              <button className="icon-btn">Instagram</button>
-              <button className="icon-btn">Youtube</button>
-              <button className="signup-btn">Sign in for series</button>
+              <button className="icon-btn">👾 Discord</button>
+              <button className="icon-btn">❌ Twitter</button>
+              <button className="signup-btn">Sign up for our newsletter</button>
             </div>
           </div>
-
           <div className="footer-nav">
             <div className="nav-column">
               <h4>Navigation</h4>
@@ -307,13 +454,9 @@ export default function App() {
             </div>
           </div>
         </div>
-
-        {/* HUGE TEXT */}
         <div className="footer-big-text">
           <span>Silver Spark Films</span>
         </div>
-
-        {/* Bottom Bar */}
         <div className="footer-bottom">
           <div className="brand-small">Silver Spark Films</div>
           <div className="legal-links">
@@ -323,7 +466,6 @@ export default function App() {
             <a href="#">Help</a>
           </div>
         </div>
-
       </footer>
 
       {/* LOGIN MODAL */}
@@ -343,16 +485,12 @@ export default function App() {
         </div>
       )}
 
-      {/* TEASER VIDEO MODAL */}
+      {/* --- PROFESSIONAL VIDEO PLAYER TRIGGER --- */}
       {showTeaser && (
-        <div className="fixed inset-0 z-[1000] bg-black/95 flex items-center justify-center p-4 backdrop-blur-md animate-fade-in">
-          <button onClick={() => setShowTeaser(false)} className="absolute top-6 right-6 text-gray-400 hover:text-lotus-red transition"><X size={40} /></button>
-          <div className="w-full max-w-6xl aspect-video bg-black shadow-[0_0_100px_rgba(255,0,0,0.15)] border border-white/10 relative overflow-hidden">
-            <video src={teaserVideo} controls autoPlay className="w-full h-full object-cover">
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        </div>
+        <ProfessionalPlayer 
+          src={teaserVideo} 
+          onClose={() => setShowTeaser(false)} 
+        />
       )}
     </div>
   );
