@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { User, X, Play, Pause, Volume2, VolumeX, Maximize, Minimize } from 'lucide-react';
 
-// 👇 FIREBASE IMPORTS
+// 👇 FIREBASE IMPORTS (Keep your existing config)
 import { auth } from './firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, signOut, onAuthStateChanged } from "firebase/auth";
 
-// 👇 ASSETS
+// 👇 ASSETS (Make sure paths are correct)
 import teaserVideo from './assets/teaser.mp4'; 
 import anjanayImg from './assets/Anjanay.jpg';  
-import aryanImg from './assets/Aryan.jpg';      
+import aryanImg from './assets/Aryan.jpg';       
 import priyanshuImg from './assets/Priyanshu.jpg';
 import samuelImg from './assets/Samuel.jpg';    
 import shalomImg from './assets/Shalom.jpg';    
@@ -25,14 +25,12 @@ const ProfessionalPlayer = ({ src, onClose }) => {
   const [showControls, setShowControls] = useState(true);
   let controlTimeout;
 
-  // Auto Play on Load
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.play().then(() => setIsPlaying(true)).catch(err => console.log("Autoplay blocked", err));
     }
   }, []);
 
-  // Handle Mouse Movement (Hide/Show Controls)
   const handleMouseMove = () => {
     setShowControls(true);
     clearTimeout(controlTimeout);
@@ -78,7 +76,6 @@ const ProfessionalPlayer = ({ src, onClose }) => {
     }
   };
 
-  // Format Time (e.g. 1:30)
   const formatTime = (time) => {
     if (!time) return "0:00";
     const minutes = Math.floor(time / 60);
@@ -92,10 +89,7 @@ const ProfessionalPlayer = ({ src, onClose }) => {
       onMouseMove={handleMouseMove}
       onMouseLeave={() => isPlaying && setShowControls(false)}
     >
-      {/* Container for Fullscreen */}
       <div className="relative w-full max-w-6xl aspect-video bg-black shadow-2xl group overflow-hidden">
-        
-        {/* Video Tag */}
         <video 
           ref={videoRef}
           src={src}
@@ -104,15 +98,11 @@ const ProfessionalPlayer = ({ src, onClose }) => {
           onTimeUpdate={handleTimeUpdate}
           onEnded={() => { setIsPlaying(false); setShowControls(true); }}
         />
-
-        {/* Close Button (Top Right) */}
         <div className={`absolute top-6 right-6 z-50 transition-opacity duration-300 ${showControls ? 'opacity-100' : 'opacity-0'}`}>
           <button onClick={onClose} className="bg-black/50 hover:bg-lotus-red p-2 rounded-full text-white backdrop-blur-md transition">
             <X size={24} />
           </button>
         </div>
-
-        {/* Big Center Play Button (Only when paused) */}
         {!isPlaying && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="bg-lotus-red/80 p-6 rounded-full text-white shadow-[0_0_50px_rgba(255,0,0,0.5)] backdrop-blur-sm animate-pulse">
@@ -120,37 +110,26 @@ const ProfessionalPlayer = ({ src, onClose }) => {
             </div>
           </div>
         )}
-
-        {/* Bottom Controls Bar */}
         <div className={`absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 to-transparent p-6 transition-all duration-500 ${showControls ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
-          
-          {/* Progress Bar */}
           <div className="w-full h-1 bg-gray-600 cursor-pointer mb-4 hover:h-2 transition-all group/bar" onClick={handleSeek}>
-             <div 
-               className="h-full bg-lotus-red relative" 
-               style={{ width: `${progress}%` }}
-             >
+             <div className="h-full bg-lotus-red relative" style={{ width: `${progress}%` }}>
                 <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover/bar:opacity-100 shadow-[0_0_10px_white]"></div>
              </div>
           </div>
-
           <div className="flex justify-between items-center text-white font-manrope">
             <div className="flex items-center gap-6">
               <button onClick={togglePlay} className="hover:text-lotus-red transition">
                 {isPlaying ? <Pause size={24} fill="white"/> : <Play size={24} fill="white"/>}
               </button>
-              
               <div className="flex items-center gap-2 group/vol">
                 <button onClick={toggleMute} className="hover:text-lotus-red transition">
                   {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
                 </button>
               </div>
-
               <span className="text-xs font-bold tracking-widest text-gray-300">
                 {videoRef.current && formatTime(videoRef.current.currentTime)} / {videoRef.current && formatTime(videoRef.current.duration)}
               </span>
             </div>
-
             <div className="flex items-center gap-4">
               <span className="text-[10px] font-bold tracking-[0.2em] text-lotus-red uppercase">Official Teaser</span>
               <button onClick={toggleFullscreen} className="hover:text-lotus-red transition">
@@ -164,19 +143,52 @@ const ProfessionalPlayer = ({ src, onClose }) => {
   );
 };
 
-/* --- UPDATED: STORY & ENDLESS COUNTDOWN SECTION --- */
+/* --- NEW COMPONENT: ARCHIVES (EVIDENCE BOARD) --- */
+const ArchiveSection = () => {
+  // Using high quality placeholders. Replace with your actual asset imports if you have them.
+  const images = [
+    "https://images.unsplash.com/photo-1605806616949-1e87b487bc2a?w=800&q=80", // Dark Alley
+    "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=800&q=80", // Red Light
+    "https://images.unsplash.com/photo-1494232410401-ad00d5433cfa?w=800&q=80", // Shadow
+    "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=800&q=80", // Retro TV
+  ];
+
+  return (
+    <section className="py-24 px-8 md:px-16 bg-black border-t border-white/10">
+      <div className="flex items-center gap-4 mb-12">
+         <div className="h-[2px] w-12 bg-lotus-red"></div>
+         <h3 className="text-gray-500 tracking-[0.4em] font-bold text-xs uppercase">The Archives</h3>
+      </div>
+      
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {images.map((src, idx) => (
+          <div key={idx} className={`relative group overflow-hidden border border-white/10 ${idx === 0 ? 'md:col-span-2 md:row-span-2' : ''}`}>
+            <img 
+              src={src} 
+              alt="Evidence" 
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
+            />
+            <div className="absolute inset-0 bg-black/50 group-hover:bg-transparent transition-colors duration-500"></div>
+            <div className="absolute bottom-4 left-4 bg-black/80 px-3 py-1 text-[10px] text-lotus-red font-mono border border-lotus-red opacity-0 group-hover:opacity-100 transition-opacity">
+              EVIDENCE_#{1024 + idx}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+/* --- STORY SECTION --- */
 const StorySection = () => {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
-    // 👇 ENDLESS TIMER LOGIC START
     const getNextTargetDate = () => {
-      const cycleDays = 15; // Timer resets every 15 days
-      const cycleDuration = cycleDays * 24 * 60 * 60 * 1000; // Convert to milliseconds
-      const baseDate = new Date("2024-01-01T00:00:00").getTime(); // A past reference date
+      const cycleDays = 15;
+      const cycleDuration = cycleDays * 24 * 60 * 60 * 1000;
+      const baseDate = new Date("2024-01-01T00:00:00").getTime();
       const now = new Date().getTime();
-      
-      // Calculate how many cycles have passed and set target to the next one
       const timePassed = now - baseDate;
       const nextCycleIndex = Math.ceil(timePassed / cycleDuration);
       return baseDate + (nextCycleIndex * cycleDuration);
@@ -188,7 +200,6 @@ const StorySection = () => {
       const now = new Date().getTime();
       let distance = targetDate - now;
 
-      // Agar timer zero ho jaye, toh turant agla cycle set kar do
       if (distance < 0) {
          targetDate = getNextTargetDate();
          distance = targetDate - now;
@@ -207,12 +218,9 @@ const StorySection = () => {
 
   return (
     <section className="relative py-24 px-8 md:px-16 bg-[#0a0a0a] overflow-hidden border-t border-white/10">
-      {/* Background Texture */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-900 via-black to-black opacity-50"></div>
       
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center relative z-10">
-        
-        {/* Left: The Story (Redacted Style) */}
         <div>
           <div className="flex items-center gap-3 mb-6">
              <span className="bg-lotus-red text-white text-[10px] font-bold px-2 py-1 uppercase tracking-widest animate-pulse">Classified</span>
@@ -233,9 +241,7 @@ const StorySection = () => {
           </p>
         </div>
 
-        {/* Right: The Endless Countdown */}
         <div className="bg-neutral-900 border border-white/10 p-10 md:p-14 relative group shadow-[0_0_30px_rgba(0,0,0,0.8)]">
-           {/* Active Corner Accents (Hover Effect Included) */}
            <div className="absolute top-0 left-0 w-2 h-2 bg-white transition-all duration-300 group-hover:w-full group-hover:bg-lotus-red/50"></div>
            <div className="absolute top-0 right-0 w-2 h-2 bg-white transition-all duration-300 group-hover:h-full group-hover:bg-lotus-red/50"></div>
            <div className="absolute bottom-0 left-0 w-2 h-2 bg-white transition-all duration-300 group-hover:h-full group-hover:bg-lotus-red/50"></div>
@@ -244,22 +250,22 @@ const StorySection = () => {
            <h3 className="text-center text-gray-500 text-xs font-bold tracking-[0.4em] uppercase mb-10">Next Occurrence</h3>
            
            <div className="grid grid-cols-4 gap-4 text-center">
-              <div>
-                <div className="text-4xl md:text-6xl font-anton text-white mb-2">{timeLeft.days}</div>
-                <div className="text-[10px] text-lotus-red uppercase tracking-widest">Days</div>
-              </div>
-              <div>
-                <div className="text-4xl md:text-6xl font-anton text-white mb-2">{timeLeft.hours}</div>
-                <div className="text-[10px] text-lotus-red uppercase tracking-widest">Hours</div>
-              </div>
-              <div>
-                <div className="text-4xl md:text-6xl font-anton text-white mb-2">{timeLeft.minutes}</div>
-                <div className="text-[10px] text-lotus-red uppercase tracking-widest">Mins</div>
-              </div>
-              <div>
-                <div className="text-4xl md:text-6xl font-anton text-white mb-2 animate-pulse">{timeLeft.seconds}</div>
-                <div className="text-[10px] text-lotus-red uppercase tracking-widest">Secs</div>
-              </div>
+             <div>
+               <div className="text-4xl md:text-6xl font-anton text-white mb-2">{timeLeft.days}</div>
+               <div className="text-[10px] text-lotus-red uppercase tracking-widest">Days</div>
+             </div>
+             <div>
+               <div className="text-4xl md:text-6xl font-anton text-white mb-2">{timeLeft.hours}</div>
+               <div className="text-[10px] text-lotus-red uppercase tracking-widest">Hours</div>
+             </div>
+             <div>
+               <div className="text-4xl md:text-6xl font-anton text-white mb-2">{timeLeft.minutes}</div>
+               <div className="text-[10px] text-lotus-red uppercase tracking-widest">Mins</div>
+             </div>
+             <div>
+               <div className="text-4xl md:text-6xl font-anton text-white mb-2 animate-pulse">{timeLeft.seconds}</div>
+               <div className="text-[10px] text-lotus-red uppercase tracking-widest">Secs</div>
+             </div>
            </div>
 
            <button className="w-full mt-12 border border-white/20 py-4 text-xs font-bold uppercase tracking-[0.2em] hover:bg-white hover:text-black transition duration-300">
@@ -277,11 +283,46 @@ export default function App() {
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState('login');
   const [showTeaser, setShowTeaser] = useState(false);
-   
   const [user, setUser] = useState(null);
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
 
-  // 👇 AUTO LOGIN CHECK
+  // 👇 AUDIO STATE
+  const [audioEnabled, setAudioEnabled] = useState(false);
+  // Using a royalty-free horror ambience URL
+  const audioRef = useRef(new Audio("https://cdn.pixabay.com/download/audio/2022/03/24/audio_108620df68.mp3?filename=horror-ambience-8394.mp3"));
+
+  // 👇 MOUSE CURSOR STATE
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [cursorHover, setCursorHover] = useState(false);
+
+  // 👇 MOUSE TRACKING EFFECT
+  useEffect(() => {
+    const moveCursor = (e) => {
+      setMousePos({ x: e.clientX, y: e.clientY });
+      const target = e.target;
+      // Expand cursor on clickable elements
+      if (target.tagName === 'BUTTON' || target.tagName === 'A' || target.closest('button') || target.closest('.cursor-pointer')) {
+        setCursorHover(true);
+      } else {
+        setCursorHover(false);
+      }
+    };
+    window.addEventListener('mousemove', moveCursor);
+    return () => window.removeEventListener('mousemove', moveCursor);
+  }, []);
+
+  // 👇 AUDIO TOGGLE FUNCTION
+  const toggleAudio = () => {
+    if (audioEnabled) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.volume = 0.3; 
+      audioRef.current.loop = true;
+      audioRef.current.play().catch(e => console.log("Audio blocked", e));
+    }
+    setAudioEnabled(!audioEnabled);
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
@@ -298,7 +339,6 @@ export default function App() {
 
   const handleInputChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  // 👇 AUTH LOGIC
   const handleAuth = async (e) => {
     e.preventDefault();
     try {
@@ -336,9 +376,21 @@ export default function App() {
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-lotus-red selection:text-white overflow-x-hidden">
-       
-      {/* 👇 INTERNAL CSS FOR FOOTER & PLAYER */}
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-lotus-red selection:text-white overflow-x-hidden cursor-none"> 
+      {/* cursor-none added above to hide default cursor */}
+
+      {/* 👇 CUSTOM CURSOR ELEMENT */}
+      <div 
+        className="fixed pointer-events-none z-[9999] transition-transform duration-100 ease-out hidden md:block"
+        style={{ 
+          left: mousePos.x, 
+          top: mousePos.y,
+          transform: `translate(-50%, -50%) scale(${cursorHover ? 2.5 : 1})`
+        }}
+      >
+        <div className={`rounded-full bg-lotus-red/80 blur-[2px] transition-all duration-300 ${cursorHover ? 'w-8 h-8 bg-transparent border-2 border-lotus-red' : 'w-3 h-3'}`}></div>
+      </div>
+
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;700;800&display=swap');
         
@@ -379,7 +431,7 @@ export default function App() {
           transition: 0.3s;
         }
         .icon-btn:hover, .signup-btn:hover {
-          background: #ff0000; /* Lotus Red hover */
+          background: #ff0000;
           border-color: #ff0000;
           color: white;
         }
@@ -453,6 +505,14 @@ export default function App() {
         </div>
       </nav>
 
+      {/* --- AUDIO TOGGLE BUTTON --- */}
+      <button 
+        onClick={toggleAudio}
+        className="fixed bottom-8 right-8 z-[100] bg-lotus-red text-white p-4 rounded-full shadow-[0_0_20px_rgba(255,0,0,0.6)] hover:scale-110 transition-transform animate-pulse"
+      >
+        {audioEnabled ? <Volume2 size={24}/> : <VolumeX size={24}/>}
+      </button>
+
       {/* --- MAIN CONTENT --- */}
       {view === 'home' && (
         <>
@@ -491,8 +551,11 @@ export default function App() {
           </div>
         </div>
 
-        {/* 👇 THIS IS THE NEW ENDLESS STORY SECTION */}
         <StorySection />
+        
+        {/* 👇 NEW ARCHIVE SECTION ADDED HERE */}
+        <ArchiveSection />
+
         </>
       )}
 
