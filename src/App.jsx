@@ -340,7 +340,7 @@ export default function App() {
             </div>
           ) : (
             <button onClick={() => setShowAuth(true)} className="bg-lotus-red text-white px-6 py-3 text-xs font-bold tracking-widest hover:bg-red-700 transition uppercase shadow-[0_0_15px_rgba(255,0,0,0.5)]">
-              LOGIN
+              SIGN IN
             </button>
           )}
         </div>
@@ -356,7 +356,7 @@ export default function App() {
           <div className="relative z-10 w-full max-w-4xl">
             <div className="flex items-center gap-4 mb-4 animate-fade-in">
                <div className="h-[2px] w-12 bg-lotus-red shadow-[0_0_10px_red]"></div>
-               <h3 className="text-lotus-red tracking-[0.4em] font-bold text-xs uppercase">UFS Original Series</h3>
+               <h3 className="text-lotus-red tracking-[0.4em] font-bold text-xs uppercase">SSF Original Series</h3>
             </div>
             
             <h1 className="text-8xl md:text-[11rem] leading-none font-anton uppercase text-white drop-shadow-glow mb-4">
@@ -364,7 +364,7 @@ export default function App() {
             </h1>
             
             <p className="text-gray-300 mt-6 text-lg md:text-xl tracking-wide font-light max-w-2xl border-l-4 border-lotus-red pl-6">
-              "The bloom is beautiful, but the roots are hidden in the dark."
+              "Teaser Coming Soon."
             </p>
 
             <div className="mt-12 flex flex-col md:flex-row gap-6">
@@ -433,9 +433,9 @@ export default function App() {
           <div className="newsletter-section">
             <h3>Stay connected for early access to our newest films and events.</h3>
             <div className="social-buttons">
-              <button className="icon-btn">👾 Discord</button>
-              <button className="icon-btn">❌ Twitter</button>
-              <button className="signup-btn">Sign up for our newsletter</button>
+              <button className="icon-btn">Instagram</button>
+              <button className="icon-btn">Youtube</button>
+              <button className="signup-btn">Sign up for Updates</button>
             </div>
           </div>
           <div className="footer-nav">
