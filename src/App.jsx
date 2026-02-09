@@ -190,7 +190,7 @@ export default function App() {
             </div>
           ) : (
             <button onClick={() => setShowAuth(true)} className="bg-lotus-red text-white px-6 py-3 text-xs font-bold tracking-widest hover:bg-red-700 transition uppercase shadow-[0_0_15px_rgba(255,0,0,0.5)]">
-              LOGIN
+              SIGN IN
             </button>
           )}
         </div>
@@ -214,7 +214,7 @@ export default function App() {
             </h1>
             
             <p className="text-gray-300 mt-6 text-lg md:text-xl tracking-wide font-light max-w-2xl border-l-4 border-lotus-red pl-6">
-              "The bloom is beautiful, but the roots are hidden in the dark."
+              "Teaser Coming Soon."
             </p>
 
             <div className="mt-12 flex flex-col md:flex-row gap-6">
@@ -271,7 +271,7 @@ export default function App() {
                 <div className="bg-dark-card border border-white/10 p-8 md:col-span-3 hover:bg-white/5 transition"><p className="text-gray-500 text-[10px] font-bold tracking-[0.3em] uppercase mb-4">EDITING & LIGHT CGI PART</p><h3 className="text-3xl font-anton uppercase text-white tracking-wide">ANJANAY @laxus_am<span className="text-lotus-red">,</span> ARYAN PAWAR <span className="text-lotus-red">&</span> AKSHAT @cf.vxpor</h3></div>
                 <div className="bg-dark-card border border-white/10 p-8 hover:bg-white/5 transition"><p className="text-gray-500 text-[10px] font-bold tracking-[0.3em] uppercase mb-4">VISUALIZER & VISUALS</p><h3 className="text-3xl font-anton uppercase text-white tracking-wide">PRIYANSHU</h3></div>
                 <div className="bg-dark-card border border-white/10 p-8 hover:bg-white/5 transition"><p className="text-gray-500 text-[10px] font-bold tracking-[0.3em] uppercase mb-4">LOCATIONS OF SHOOT</p><h3 className="text-2xl font-anton uppercase text-white tracking-wide">BADLAPUR <br/> AMBARNATH</h3></div>
-                <div className="bg-dark-card border border-lotus-red p-8 hover:bg-white/5 transition shadow-[0_0_15px_rgba(255,0,0,0.1)]"><p className="text-lotus-red text-[10px] font-bold tracking-[0.3em] uppercase mb-4">WEB DEVELOPER</p><h3 className="text-2xl font-anton uppercase text-white tracking-wide">LUFFY__4567 @luffy__4567</h3></div>
+                <div className="bg-dark-card border border-lotus-red p-8 hover:bg-white/5 transition shadow-[0_0_15px_rgba(255,0,0,0.1)]"><p className="text-lotus-red text-[10px] font-bold tracking-[0.3em] uppercase mb-4">WEB DEVELOPER</p><h3 className="text-2xl font-anton uppercase text-white tracking-wide">LUFFY__4567 </h3></div>
              </div>
           </div>
         )}
@@ -285,9 +285,9 @@ export default function App() {
           <div className="newsletter-section">
             <h3>Stay connected for early access to our newest films and events.</h3>
             <div className="social-buttons">
-              <button className="icon-btn">👾 Discord</button>
-              <button className="icon-btn">❌ Twitter</button>
-              <button className="signup-btn">Sign up for our newsletter</button>
+              <button className="icon-btn">Instagram</button>
+              <button className="icon-btn">Youtube</button>
+              <button className="signup-btn">Sign in for series</button>
             </div>
           </div>
 
