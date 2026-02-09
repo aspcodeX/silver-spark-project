@@ -164,6 +164,96 @@ const ProfessionalPlayer = ({ src, onClose }) => {
   );
 };
 
+/* --- NEW: STORY & COUNTDOWN SECTION --- */
+const StorySection = () => {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  // Countdown Logic (Set date to Future)
+  useEffect(() => {
+    const targetDate = new Date("2026-04-01T00:00:00").getTime(); // <-- CHANGE DATE HERE
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+
+      if (distance < 0) {
+        clearInterval(interval);
+      } else {
+        setTimeLeft({
+          days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+          seconds: Math.floor((distance % (1000 * 60)) / 1000),
+        });
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <section className="relative py-24 px-8 md:px-16 bg-[#0a0a0a] overflow-hidden border-t border-white/10">
+      {/* Background Texture */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-900 via-black to-black opacity-50"></div>
+      
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center relative z-10">
+        
+        {/* Left: The Story (Redacted Style) */}
+        <div>
+          <div className="flex items-center gap-3 mb-6">
+             <span className="bg-lotus-red text-white text-[10px] font-bold px-2 py-1 uppercase tracking-widest">Confidential</span>
+             <span className="text-gray-500 text-[10px] font-mono tracking-widest">FILE_NO_2026_RL</span>
+          </div>
+          
+          <h2 className="text-4xl md:text-6xl font-anton uppercase text-white mb-8 leading-tight">
+            NOT EVERY <span className="text-lotus-red">TRUTH</span> <br/> IS MEANT TO BE <br/> FOUND.
+          </h2>
+          
+          <p className="text-gray-400 text-lg leading-relaxed font-manrope mb-6">
+            In the shadowed alleys of <span className="bg-white/10 px-1 text-white">Badlapur</span>, a secret society moves in silence. They don't want money. They don't want power. They want <span className="text-lotus-red font-bold">blood</span>.
+          </p>
+          
+          <p className="text-gray-400 text-lg leading-relaxed font-manrope">
+            When Nikhil stumbles upon the <span className="line-through decoration-lotus-red decoration-2 text-gray-600">forbidden archives</span>, he realizes that his life was never his own. The 
+            <span className="text-white font-bold tracking-wider mx-1">RED LOTUS</span> is blooming, and its roots are deeper than anyone feared.
+          </p>
+        </div>
+
+        {/* Right: The Countdown */}
+        <div className="bg-neutral-900 border border-white/10 p-10 md:p-14 relative group shadow-[0_0_30px_rgba(0,0,0,0.8)]">
+           <div className="absolute top-0 left-0 w-2 h-2 bg-white"></div>
+           <div className="absolute top-0 right-0 w-2 h-2 bg-white"></div>
+           <div className="absolute bottom-0 left-0 w-2 h-2 bg-white"></div>
+           <div className="absolute bottom-0 right-0 w-2 h-2 bg-white"></div>
+
+           <h3 className="text-center text-gray-500 text-xs font-bold tracking-[0.4em] uppercase mb-10">Premiere Countdown</h3>
+           
+           <div className="grid grid-cols-4 gap-4 text-center">
+              <div>
+                <div className="text-4xl md:text-6xl font-anton text-white mb-2">{timeLeft.days}</div>
+                <div className="text-[10px] text-lotus-red uppercase tracking-widest">Days</div>
+              </div>
+              <div>
+                <div className="text-4xl md:text-6xl font-anton text-white mb-2">{timeLeft.hours}</div>
+                <div className="text-[10px] text-lotus-red uppercase tracking-widest">Hours</div>
+              </div>
+              <div>
+                <div className="text-4xl md:text-6xl font-anton text-white mb-2">{timeLeft.minutes}</div>
+                <div className="text-[10px] text-lotus-red uppercase tracking-widest">Mins</div>
+              </div>
+              <div>
+                <div className="text-4xl md:text-6xl font-anton text-white mb-2 animate-pulse">{timeLeft.seconds}</div>
+                <div className="text-[10px] text-lotus-red uppercase tracking-widest">Secs</div>
+              </div>
+           </div>
+
+           <button className="w-full mt-12 border border-white/20 py-4 text-xs font-bold uppercase tracking-[0.2em] hover:bg-white hover:text-black transition duration-300">
+             Join the Waitlist
+           </button>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 /* --- MAIN APP COMPONENT --- */
 export default function App() {
   const [view, setView] = useState('home');
@@ -348,6 +438,8 @@ export default function App() {
 
       {/* --- MAIN CONTENT --- */}
       {view === 'home' && (
+        <>
+        {/* HERO SECTION */}
         <div className="relative min-h-screen flex items-center px-8 md:px-16 pt-20">
           <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-30"></div>
           <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent"></div>
@@ -381,6 +473,10 @@ export default function App() {
             </div>
           </div>
         </div>
+
+        {/* 👇 NEW SECTION ADDED HERE */}
+        <StorySection />
+        </>
       )}
 
       <div className="px-8 md:px-16 py-20 bg-black">
