@@ -323,7 +323,7 @@ export default function App() {
       {/* --- NAVBAR --- */}
       <nav className="flex justify-between items-center px-8 py-6 fixed w-full z-50 bg-gradient-to-b from-black/90 to-transparent backdrop-blur-sm">
         <div onClick={() => setView('home')} className="text-xl md:text-2xl font-anton tracking-wide cursor-pointer uppercase hover:opacity-80">
-          SILVER SPARK <span className="text-lotus-red">FILMS</span>
+          SILVERNOVA MOTION <span className="text-lotus-red">PICTURES</span>
         </div>
         
         <div className="hidden md:flex gap-10 text-xs font-bold tracking-widest text-gray-400 uppercase">
@@ -356,7 +356,7 @@ export default function App() {
           <div className="relative z-10 w-full max-w-4xl">
             <div className="flex items-center gap-4 mb-4 animate-fade-in">
                <div className="h-[2px] w-12 bg-lotus-red shadow-[0_0_10px_red]"></div>
-               <h3 className="text-lotus-red tracking-[0.4em] font-bold text-xs uppercase">SSF Original Series</h3>
+               <h3 className="text-lotus-red tracking-[0.4em] font-bold text-xs uppercase">SMP Original Series</h3>
             </div>
             
             <h1 className="text-8xl md:text-[11rem] leading-none font-anton uppercase text-white drop-shadow-glow mb-4">
@@ -455,10 +455,10 @@ export default function App() {
           </div>
         </div>
         <div className="footer-big-text">
-          <span>Silver Spark Films</span>
+          <span>Silvernova Motion Pictures</span>
         </div>
         <div className="footer-bottom">
-          <div className="brand-small">Silver Spark Films</div>
+          <div className="brand-small">Silvernova Motion Pictures</div>
           <div className="legal-links">
             <a href="#">About</a>
             <a href="#">Privacy</a>
